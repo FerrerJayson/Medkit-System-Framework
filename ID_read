@@ -1,0 +1,17 @@
+from pySerialTransfer import pySerialTransfer as txfer
+import time
+link = txfer.SerialTransfer('COM6', 9600) 
+
+link.open()
+time.sleep(2)
+print("fingerprint led on")
+link.send(link.tx_obj(6))
+time.sleep(3)
+link.send(link.tx_obj(9))
+while 1:
+    if link.available():
+        id = link.rx_obj(obj_type='i')
+        print(id)
+link.close()
+link.open()
+time.sleep(3)

@@ -3,7 +3,7 @@ import time
 from pySerialTransfer import pySerialTransfer as txfer
 from pygame import mixer
 
-link = txfer.SerialTransfer('COM3', 9600) #chang port number accordingly
+link = txfer.SerialTransfer('COM6', 9600) #chang port number accordingly
 link.open()
 name_entry_flag = 0
 pin_entry_flag = 0

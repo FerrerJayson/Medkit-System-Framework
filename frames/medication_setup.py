@@ -2,9 +2,12 @@ import tkinter as tk
 from pySerialTransfer import pySerialTransfer as txfer
 from tkcalendar import Calendar
 import time
+from pygame import mixer
+from variables import login, pin
 
-link = txfer.SerialTransfer('COM3', 9600) #chang port number accordingly
-link.open()
+def play(name):
+    sfx= mixer.Sound(f"./audios/{name}.wav")
+    sfx.play()
 
 class PageOne(tk.Frame):
 
@@ -50,8 +53,6 @@ class PageOne(tk.Frame):
         mednn.bind("<1>", medm)
         def btnsel():
             global flag
-            global medname
-            global medname2
             if flag == 0:
                 campanel.config(image=camimg)
                 campanel.place(x=440,y=1)
@@ -60,7 +61,7 @@ class PageOne(tk.Frame):
                 btn_meds.place(x=41 ,y=373)
                 whtp.place_forget()
                 whtpt.place_forget()
-                entermed.play()
+                play("entermed")
                 flag = 1
                 
             else:
@@ -68,10 +69,6 @@ class PageOne(tk.Frame):
                 #medname=medn.get()
                 #mednn.delete(0, END)
                 #whtpt.config(text=medname)
-                send_size = 0
-                list_size = link.tx_obj(5)
-                send_size += list_size
-                link.send(send_size)
                 btn_meds.place_forget()
                 whtp.place(x=41 ,y=373)
                 whtpt.place(x=55 ,y=410)
@@ -81,28 +78,13 @@ class PageOne(tk.Frame):
                     line = f.readline()
                     f.close()
                     print("code is " + line)
-                send_size = 0
-                list_size = link.tx_obj(1)
-                send_size += list_size
-                link.send(send_size)
                 campanel.config(image=camimg2)
                 campanel.place(x=440,y=1)
                 whtpt.config(text=line)
                 btn_meds.place_forget()
                 whtp.place(x=41 ,y=373)
                 whtpt.place(x=55 ,y=410)
-                enterdose.play()
-        
-
-        #keyboard.on_press_key("escape", btnsel2)
-        # btn_sel= PhotoImage(file="inmed.png")
-        # self.btn_sel=btn_sel
-        # btn_sel2= PhotoImage(file="white bg.png")
-        # self.btn_sel2=btn_sel2
-        # btn_sel3= PhotoImage(file="cte.png")
-        # self.btn_sel3=btn_sel3
-        # sel=tk.Button(self,borderwidth=0,image=btn_sel,command=btnsel)
-        # sel.place(x=41 ,y=373)
+                play("enterdose")
 
         def btnmeds():
             medsbtn.place_forget()
@@ -147,12 +129,12 @@ class PageOne(tk.Frame):
         global dosep
         dosep = clicked_meds.get()
         #dose.place(x=485,y=373)
-        meds.config(text = "Medication",width=15,font=calibri2,bg="white", borderwidth=0,direction="below")
-        dose.config(text = "Dose",width=15,font=calibri2,bg="white", borderwidth=0,direction="below")
+        meds.config(text = "Medication",width=15,font=('Helvetica', 30),bg="white", borderwidth=0,direction="below")
+        dose.config(text = "Dose",width=15,font=('Helvetica', 30),bg="white", borderwidth=0,direction="below")
         menudose = self.nametowidget(dose.menuname)
         menumeds = self.nametowidget(meds.menuname)
-        menudose.config(font=calibri2)
-        menumeds.config(font=calibri2)
+        menudose.config(font=('Helvetica', 30))
+        menumeds.config(font=('Helvetica', 30))
         def change():
             clkpcd.config(text="Click to Finish",command=pg3)
             campanel.place_forget()
@@ -160,7 +142,7 @@ class PageOne(tk.Frame):
         def pg3():
             controller.show_frame("PageFour")
 
-        clkpcd=tk.Button(self,borderwidth=0,text="Click to Proceed",fg="#A6A6A6",bg="white",font=calibri2,command=change)
+        clkpcd=tk.Button(self,borderwidth=0,text="Click to Proceed",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=change)
 
         def dateiton():
             datebtn.place_forget()
@@ -168,8 +150,8 @@ class PageOne(tk.Frame):
             dosep=clicked_dose.get()
             whtdose2.place(x=854,y=373)
             global labelmore,labelmore2
-            labelmore = tk.Label(self,text="7:00AM / 12:00PM / 7:00PM", font=calibri,bg="white")
-            labelmore2 = tk.Label(self,text="", font=calibri,bg="white")
+            labelmore = tk.Label(self,text="7:00AM / 12:00PM / 7:00PM", font=('Helvetica', 30),bg="white")
+            labelmore2 = tk.Label(self,text="", font=('Helvetica', 30),bg="white")
             global pilidose
             print (dosep)
             # if dosep=="1 dose a day":
@@ -206,13 +188,9 @@ class PageOne(tk.Frame):
         datebtn.place(x=854 ,y=373)
         whtdose2=tk.Label(self,image=wht,borderwidth=0)
 
-        logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=calibri2,command=lambda:controller.show_frame("StartPage"))
+        logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("StartPage"))
         logout.place(x=1000,y=700)
     def on_show_frame(self, event):
-        send_size = 0
-        list_size = link.tx_obj(1)
-        send_size += list_size
-        link.send(send_size)
         global pilidose,time1,time2,time3,time4,time5
         time1= hr +":"+mins+pm
         time2= hr1 +":"+mins1+pm1
@@ -274,10 +252,6 @@ class PageOne(tk.Frame):
             pilidose =5
             labelmore2.place(x=880,y=440)
         labelmore.place(x=880,y=400)
-        send_size = 0
-        list_size = link.tx_obj(1)
-        send_size += list_size
-        link.send(send_size)
 
 class PageTwo(tk.Frame):
 
@@ -297,7 +271,7 @@ class PageTwo(tk.Frame):
 			year = 2022, month = 1,
 			day = 10)
         cal.config(background="#ffffff",foreground="black",headersbackground="#ffffff",othermonthbackground="white",othermonthwebackground="white",firstweekday="sunday",showweeknumbers=0,
-				borderwidth=0,font=calibri3,weekendbackground="white",weekendforeground="black",bordercolor="white",selectbackground="#2196F3")
+				borderwidth=0,font=('Helvetica', 35),weekendbackground="white",weekendforeground="black",bordercolor="white",selectbackground="#2196F3")
         cal.place(x=500,y=85)
 
         def data():
@@ -327,9 +301,9 @@ class PageTwo(tk.Frame):
         endsel=tk.Button(self,borderwidth=0,image=endate,command=getdate1)
         endsel.place(x=900 ,y=600)
 
-        date=tk.Label(self,text=" ",font=calibri,bg="white")
-        dashy=tk.Label(self,text="-",font=calibri,bg="white")
-        date1=tk.Label(self,text=" ",font=calibri,bg="white")
+        date=tk.Label(self,text=" ",font=('Helvetica', 30),bg="white")
+        dashy=tk.Label(self,text="-",font=('Helvetica', 30),bg="white")
+        date1=tk.Label(self,text=" ",font=('Helvetica', 30),bg="white")
         date.place(x=720,y=700)
         date1.place(x=900,y=700)
         dashy.place(x=850,y=700)
@@ -342,11 +316,11 @@ class PageTwo(tk.Frame):
         #wht2panel.place(x=150,y=400)
         wht3panel=tk.Label(self,image=wht1,borderwidth=0)
         #wht3panel.place(x=150,y=550)
-        sts=tk.Label(self,text="Select Time Schedule",font=calibri5,bg="white",fg="#A6A6A6")
+        sts=tk.Label(self,text="Select Time Schedule",font=('Helvetica', 30),bg="white",fg="#A6A6A6")
         sts.place(x=100,y=140)
         global dpd
         print (dosep)
-        dpd=tk.Label(self,text=dosep,font=calibri4,bg="white",fg="#A6A6A6")
+        dpd=tk.Label(self,text=dosep,font=('Helvetica', 30),bg="white",fg="#A6A6A6")
         dpd.place(x=100,y=185)
         #ds1=Label(self,text=" 7 : 00 AM ",font=calibri3,bg="white")
         #ds2=Label(self,text="12 : 00 PM",font=calibri3,bg="white")
@@ -362,52 +336,52 @@ class PageTwo(tk.Frame):
         am4=tk.StringVar()
         hour_string=tk.StringVar()
         min_string=tk.StringVar()
-        min_sb = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string,width=2,state="readonly",font=calibri3)
-        sec_hour = tk.Spinbox(self,from_=0,to=50,increment=10,wrap=True,textvariable=min_string,font=calibri3,width=2,)
+        min_sb = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string,width=2,state="readonly",font=('Helvetica', 35))
+        sec_hour = tk.Spinbox(self,from_=0,to=50,increment=10,wrap=True,textvariable=min_string,font=('Helvetica', 35),width=2,)
         am.set("AM")
         sec = tk.OptionMenu( self , am , *options)
-        sec.config(text="AM",width=4,font=calibri3,bg="white", borderwidth=0,direction="below")
+        sec.config(text="AM",width=4,font=('Helvetica', 35),bg="white", borderwidth=0,direction="below")
         menu = self.nametowidget(sec.menuname)
-        menu.config(font=calibri3)
+        menu.config(font=('Helvetica', 35))
         min_sb.place(x=165,y=260)
         sec_hour.place(x=240,y=260)
         sec.place(x=315,y=260)
 
         hour_string1=tk.StringVar()
         min_string1=tk.StringVar()
-        min_sb1 = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string1,width=2,state="readonly",font=calibri3)
-        sec_hour1 = tk.Spinbox(self,from_=0,to=50,increment=10,wrap=True,textvariable=min_string1,font=calibri3,width=2,)
+        min_sb1 = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string1,width=2,state="readonly",font=('Helvetica', 35))
+        sec_hour1 = tk.Spinbox(self,from_=0,to=50,increment=10,wrap=True,textvariable=min_string1,font=('Helvetica', 35),width=2,)
         am1.set("AM")
         sec1 = tk.OptionMenu( self , am1 , *options)
-        sec1.config(text="AM",width=4,font=calibri3,bg="white", borderwidth=0,direction="below")
+        sec1.config(text="AM",width=4,font=('Helvetica', 35),bg="white", borderwidth=0,direction="below")
         menu1 = self.nametowidget(sec1.menuname)
-        menu1.config(font=calibri3)
+        menu1.config(font=('Helvetica', 35))
         min_sb1.place(x=165,y=330)
         sec_hour1.place(x=240,y=330)
         sec1.place(x=315,y=330)
 
         hour_string2=tk.StringVar()
         min_string2=tk.StringVar()
-        min_sb2 = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string2,width=2,state="readonly",font=calibri3)
-        sec_hour2 = tk.Spinbox(self,from_=00,to=50,wrap=True,increment=10,textvariable=min_string2,font=calibri3,width=2,)
+        min_sb2 = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string2,width=2,state="readonly",font=('Helvetica', 35))
+        sec_hour2 = tk.Spinbox(self,from_=00,to=50,wrap=True,increment=10,textvariable=min_string2,font=('Helvetica', 35),width=2,)
         am2.set("AM")
         sec2 = tk.OptionMenu( self , am2 , *options)
-        sec2.config(text="AM",width=4,font=calibri3,bg="white", borderwidth=0,direction="below")
+        sec2.config(text="AM",width=4,font=('Helvetica', 35),bg="white", borderwidth=0,direction="below")
         menu2 = self.nametowidget(sec2.menuname)
-        menu2.config(font=calibri3)
+        menu2.config(font=('Helvetica', 35))
         min_sb2.place(x=165,y=410)
         sec_hour2.place(x=240,y=410)
         sec2.place(x=315,y=410)
 
         hour_string3=tk.StringVar()
         min_string3=tk.StringVar()
-        min_sb3 = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string3,width=2,state="readonly",font=calibri3)
-        sec_hour3 = tk.Spinbox(self,from_=0,to=50,wrap=True,increment=10,textvariable=min_string3,font=calibri3,width=2,)
+        min_sb3 = tk.Spinbox(self,from_=0,to=12,wrap=True,textvariable=hour_string3,width=2,state="readonly",font=('Helvetica', 35))
+        sec_hour3 = tk.Spinbox(self,from_=0,to=50,wrap=True,increment=10,textvariable=min_string3,font=('Helvetica', 35),width=2,)
         am3.set("AM")
         sec3 = tk.OptionMenu( self , am3 , *options)
-        sec3.config(text="AM",width=4,font=calibri3,bg="white", borderwidth=0,direction="below")
+        sec3.config(text="AM",width=4,font=('Helvetica', 35),bg="white", borderwidth=0,direction="below")
         menu3 = self.nametowidget(sec3.menuname)
-        menu3.config(font=calibri3)
+        menu3.config(font=('Helvetica', 35))
         min_sb3.place(x=165,y=480)
         sec_hour3.place(x=240,y=480)
         sec3.place(x=315,y=480)
@@ -415,13 +389,13 @@ class PageTwo(tk.Frame):
 
         hour_string4=tk.StringVar()
         min_string4=tk.StringVar()
-        min_sb4 = tk.Spinbox(self,from_=0,to=23,wrap=True,textvariable=hour_string4,width=2,state="readonly",font=calibri3)
-        sec_hour4 = tk.Spinbox(self,from_=0,to=50,wrap=True,increment=10,textvariable=min_string4,font=calibri3,width=2,)
+        min_sb4 = tk.Spinbox(self,from_=0,to=23,wrap=True,textvariable=hour_string4,width=2,state="readonly",font=('Helvetica', 35))
+        sec_hour4 = tk.Spinbox(self,from_=0,to=50,wrap=True,increment=10,textvariable=min_string4,font=('Helvetica', 35),width=2,)
         am4.set("AM")
         sec4 = tk.OptionMenu( self , am4 , *options)
-        sec4.config(text="AM",width=4,font=calibri3,bg="white", borderwidth=0,direction="below")
+        sec4.config(text="AM",width=4,font=('Helvetica', 35),bg="white", borderwidth=0,direction="below")
         menu4 = self.nametowidget(sec4.menuname)
-        menu4.config(font=calibri3)
+        menu4.config(font=('Helvetica', 35))
         min_sb4.place(x=165,y=560)
         sec_hour4.place(x=240,y=560)
         sec4.place(x=315,y=560)
@@ -444,10 +418,10 @@ class PageTwo(tk.Frame):
             pm4=am4.get()
             print (hr+mins)
             controller.show_frame("PageOne")
-        clkpcd=tk.Button(self,borderwidth=0,text="Click to Proceed",fg="#A6A6A6",bg="white",font=calibri5,command=getmoredata)
+        clkpcd=tk.Button(self,borderwidth=0,text="Click to Proceed",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=getmoredata)
         clkpcd.place(x=130 ,y=675)
     def on_show_frame(self, event):
-        seldate.play()
+        play('seldate')
         dpd.config(text=dosep)
         if dosep=="1 dose a day":
             min_sb.place_forget() 
@@ -529,10 +503,6 @@ class PageTwo(tk.Frame):
             min_sb4.place(x=150,y=560)
             sec_hour4.place(x=240,y=560)
             sec4.place(x=315,y=560)
-        send_size = 0
-        list_size = link.tx_obj(1)
-        send_size += list_size
-        link.send(send_size)
 
 class PageThree(tk.Frame):
 
@@ -546,20 +516,15 @@ class PageThree(tk.Frame):
         owimg= tk.PhotoImage(file="ownum2.png")
         self.owimg=owimg
         owpanel=tk.Label(self,image=owimg,borderwidth=0)
-        owpanel.place(x=60,y=51)
-        calibri1 = font.Font(self,family="Calibri",size=20,weight="bold") 
-        calibri2 = font.Font(self,family="Calibri",size=40,weight="bold")
-        calibri3 = font.Font(self,family="Calibri",size=60,weight="bold")      
+        owpanel.place(x=60,y=51)      
         global date1
         #label1= Label(self,text="Place "+ medname2 + " at any Medicine Bay",bg="white",font=calibri2)
-        print(medname2)
 
         
-        label2= tk.Label(self,text="Medicine Bay will light up once sensor detected the medicine",fg="#A6A6A6",bg="white",font=calibri1)
+        label2= tk.Label(self,text="Medicine Bay will light up once sensor detected the medicine",fg="#A6A6A6",bg="white",font=('Helvetica', 30))
         label2.place(x=220,y=500)
         global label1
-        label1= tk.Label(self,text="",bg="white",font=calibri2)
-        print(medname2) 
+        label1= tk.Label(self,text="",bg="white",font=('Helvetica', 30)) 
         label1.place(x=260,y=350)
 
         def updategg(x):
@@ -568,8 +533,8 @@ class PageThree(tk.Frame):
         def gg():
             label1.place_forget()
             label2.place_forget()
-            label3= tk.Label(self,text="Set Up All Done!",bg="white",font=calibri3)
-            setdone.play()
+            label3= tk.Label(self,text="Set Up All Done!",bg="white",font=('Helvetica', 30))
+            play('setdone')
             label3.place(x=370,y=350)
             time.sleep(3)
             controller.show_frame("PageOne")
@@ -577,21 +542,12 @@ class PageThree(tk.Frame):
         def key(event):
             gg()
 
-        clkpcd=tk.Button(self,borderwidth=0,text="                         ",fg="#A6A6A6",bg="white",font=calibri2,command=gg)
+        clkpcd=tk.Button(self,borderwidth=0,text="                         ",fg="#A6A6A6",bg="white",font=('Helvetica', 40),command=gg)
         clkpcd.place(x=490 ,y=600)
 
     def on_show_frame(self, event):
-        print ("Welcome " + login)
-        print("hey")
         label1.config(text="Place "+   line + " at lit up Medicine Bay")
-        placemed.play()
-        send_size = 0
-        list_size = link.tx_obj(11)
-        send_size += list_size
-        link.send(send_size)
-        while not link.available():
-            arr = link.rx_obj(obj_type='i')
-            print(arr)
+        play("placemed")
 
 class PageFour(tk.Frame):
 
@@ -612,25 +568,25 @@ class PageFour(tk.Frame):
         
 
         global labe1,labe2,labe3,labe4,labe5,labe6,labe7,labe8,labe9,labe10
-        labe1= tk.Label(self,bg="white",font=calibri3)
+        labe1= tk.Label(self,bg="white",font=('Helvetica', 35))
         labe1.place(x=100,y=170)
-        labe2= tk.Label(self,bg="white",font=calibri3)
+        labe2= tk.Label(self,bg="white",font=('Helvetica', 35))
         labe2.place(x=100,y=270)
-        labe3= tk.Label(self,bg="white",font=calibri3)
+        labe3= tk.Label(self,bg="white",font=('Helvetica', 35))
         labe3.place(x=100,y=370)
-        labe4= tk.Label(self,bg="white",font=calibri3)
+        labe4= tk.Label(self,bg="white",font=('Helvetica', 35))
         labe4.place(x=100,y=470)
-        labe5= tk.Label(self,bg="white",font=calibri3)
+        labe5= tk.Label(self,bg="white",font=('Helvetica', 35))
         labe5.place(x=100,y=570)
-        labe6= tk.Label(self,bg="white",font=calibri1)
+        labe6= tk.Label(self,bg="white",font=('Helvetica', 30))
         labe6.place(x=100,y=250)
-        labe7= tk.Label(self,bg="white",font=calibri1)
+        labe7= tk.Label(self,bg="white",font=('Helvetica', 30))
         labe7.place(x=100,y=350)
-        labe8= tk.Label(self,bg="white",font=calibri1)
+        labe8= tk.Label(self,bg="white",font=('Helvetica', 30))
         labe8.place(x=100,y=450)
-        labe9= tk.Label(self,bg="white",font=calibri1)
+        labe9= tk.Label(self,bg="white",font=('Helvetica', 30))
         labe9.place(x=100,y=550)
-        labe10= tk.Label(self,bg="white",font=calibri1)
+        labe10= tk.Label(self,bg="white",font=('Helvetica', 30))
         labe10.place(x=100,y=650)
         global dose1,dose2,dose3,dose4,dose5,AMT
         dose1= tk.PhotoImage(file="1dose.png")
@@ -647,28 +603,23 @@ class PageFour(tk.Frame):
         #AMT.place(x=830,y=160)
         global lb1,lb2,lb3,lb4,lb5
         
-        lb1 = tk.Label(self , text = time1 ,font=calibri3,bg= "white",borderwidth=0) 
+        lb1 = tk.Label(self , text = time1 ,font=('Helvetica', 35),bg= "white",borderwidth=0) 
         lb1.place(x=830,y=160)
-        lb2=tk.Label(self,text= "",bg="white",font=calibri3,borderwidth=0)
+        lb2=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
         lb2.place(x=830,y=270)
-        lb3=tk.Label(self,text= "",bg="white",font=calibri3,borderwidth=0)
+        lb3=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
         lb3.place(x=830,y=370)
-        lb4=tk.Label(self,text= "",bg="white",font=calibri3,borderwidth=0)
+        lb4=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
         lb4.place(x=830,y=470)
-        lb5=tk.Label(self,text= "",bg="white",font=calibri3,borderwidth=0)
+        lb5=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
         lb5.place(x=830,y=570)
 
-        logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=calibri2,command=lambda:controller.show_frame("StartPage"))
+        logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("StartPage"))
         logout.place(x=1000,y=72)
-        setup=tk.Button(self,borderwidth=0,text="Click to set up",fg="#A6A6A6",bg="white",font=calibri2,command=lambda:controller.show_frame("PageOne"))
+        setup=tk.Button(self,borderwidth=0,text="Click to set up",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("PageOne"))
         setup.place(x=850,y=700)
     def on_show_frame(self, event):
         print(time1)
-        
-        send_size = 0
-        list_size = link.tx_obj(1)
-        send_size += list_size
-        link.send(send_size)
         def month(x):
             switcher = {
             '1': "JAN",

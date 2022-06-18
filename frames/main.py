@@ -1,38 +1,9 @@
 import tkinter as tk
 from registration import NamePage, PinPage, PinConfirmPage
 from mainscreen import ActiveScreen, HomePage
+from medication_setup import PageOne, PageTwo, PageThree, PageFour
 from login import StartPage
 from pySerialTransfer import pySerialTransfer as txfer
-
-link = txfer.SerialTransfer('COM3', 9600) #chang port number accordingly
-link.open()
-send_size = 0
-list_size = link.tx_obj(3)
-send_size += list_size
-link.send(send_size) #send Red led code
-line=""
-login="admin" #default login name
-pin="1234"  #default pin
-pas=""
-flag3=0
-flag4=0
-flag5=0
-flag6=0
-flag7=0
-flag8=0
-flag9=0
-medname="" #medicine name var
-medname2=""
-x=0
-dosep=""
-time1="" 
-time2=""
-time3="" 
-time4=""
-time5="" 
-
-setpass = "1234"
-setlog ="admin"
 
 class MedkitUI(tk.Tk):
 
@@ -48,7 +19,7 @@ class MedkitUI(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (ActiveScreen, HomePage, StartPage, NamePage, PinPage, PinConfirmPage):
+        for F in (ActiveScreen, HomePage, StartPage, NamePage, PinPage, PinConfirmPage, PageOne, PageTwo, PageThree, PageFour):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -65,8 +36,6 @@ class MedkitUI(tk.Tk):
         frame = self.frames[page_name]
         frame.event_generate("<<ShowFrame>>")
         frame.tkraise()
-
-
 
 if __name__ == "__main__":
     app = MedkitUI()

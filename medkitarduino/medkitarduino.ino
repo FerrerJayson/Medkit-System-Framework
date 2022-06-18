@@ -9,7 +9,7 @@ SerialTransfer myTransfer;
 int x=0;
 int i=0;
 int g=0;
-char arr[] = "yes";
+char arr[] = "Ready";
 char arr2[] = "no";
 void setup()
 {
@@ -18,14 +18,15 @@ void setup()
   myTransfer.begin(Serial);
   pinMode(A11,OUTPUT);
   pinMode(A9,OUTPUT);
-  for(i=2;i<=10;i++){
+  fps.SetLED(false);
+  /*for(i=2;i<=10;i++){
         pinMode(i,OUTPUT);
         delay(500);
         digitalWrite(i-1,LOW);
         analogWrite(i,150);
       }
       delay(500);
-  digitalWrite(10,LOW);
+  digitalWrite(10,LOW);*/
 }
 void Enroll()
 {
@@ -42,30 +43,35 @@ void Enroll()
   fps.EnrollStart(enrollid);
 
   // enroll
-  Serial.print("Press finger to Enroll #");
-  Serial.println(enrollid);
+  //Serial.print("Press finger to Enroll #");
+  //Serial.println(enrollid);
+  uint16_t sendSize = 0;
+  sendSize = myTransfer.txObj(arr, sendSize, strlen(arr));
+  myTransfer.sendData(sendSize);
   while(fps.IsPressFinger() == false) delay(100);
   bool bret = fps.CaptureFinger(true);
   int iret = 0;
   if (bret != false)
   {
-    Serial.println("Remove finger");
+    sendSize = myTransfer.txObj(arr, sendSize, strlen(arr));
+    myTransfer.sendData(sendSize);
+    //Serial.println("Remove finger");
     fps.Enroll1(); 
     while(fps.IsPressFinger() == true) delay(100);
-    Serial.println("Press same finger again");
+    //Serial.println("Press same finger again");
     while(fps.IsPressFinger() == false) delay(100);
     bret = fps.CaptureFinger(true);
     if (bret != false)
     {
-      Serial.println("Remove finger");
+      //Serial.println("Remove finger");
       fps.Enroll2();
       while(fps.IsPressFinger() == true) delay(100);
-      Serial.println("Press same finger yet again");
+     // Serial.println("Press same finger yet again");
       while(fps.IsPressFinger() == false) delay(100);
       bret = fps.CaptureFinger(true);
       if (bret != false)
       {
-        Serial.println("Remove finger");
+        //Serial.println("Remove finger");
         iret = fps.Enroll3();
         if (iret == 0)
         {
@@ -97,14 +103,17 @@ void IDit(){
     id = fps.Identify1_N();
     if (id <200) 
     {
-      Serial.print("Verified ID:");
-      Serial.println(id);
+      //Serial.print("Verified ID:");
+     //Serial.println(id);
     }else{
       id = 0;
     }
 }
 }
-
+/*
+ legend
+ biggest bay
+ */
 void loop()
 { 
   if(myTransfer.available())
@@ -114,27 +123,27 @@ void loop()
     y=x-8;
   }
     if(x==1){
-      digitalWrite(A9,HIGH);
+      digitalWrite(A9,HIGH); //green
       digitalWrite(A11,LOW);
     }else if(x==2){
-      digitalWrite(A11,HIGH);
+      digitalWrite(A11,HIGH); //yellow
       digitalWrite(A9,HIGH);
     }else if(x==3){
-      digitalWrite(A11,HIGH);
+      digitalWrite(A11,HIGH); //red
       digitalWrite(A9,LOW);
     }else if(x==4){
-      digitalWrite(A11,LOW);
+      digitalWrite(A11,LOW); //off
       digitalWrite(A9,LOW);
     }else if(x==5){
       //deetc
     }else if(x==6){
-      fps.SetLED(true);
+      fps.SetLED(true); //on finger led
     }else if(x==7){
-      fps.SetLED(false);
+      fps.SetLED(false);//off finger led
     }else if(x==8){
-      Enroll();
+      Enroll(); //enroll finger
     }else if(x==9){
-      IDit();
+      IDit(); // read id finger
     }
    else if(x==10){
         analogWrite(2,150);
@@ -156,7 +165,7 @@ void loop()
         digitalWrite(8,LOW);
         digitalWrite(9,LOW);
         digitalWrite(10,LOW);
-//        if (analogRead(A1)>= 0){
+        if (analogRead(A1)>= 0){
           digitalWrite(A9,HIGH);
           digitalWrite(A11,LOW);
           uint16_t sendSize = 0;

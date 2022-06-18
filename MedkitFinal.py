@@ -996,7 +996,6 @@ class PageOne(tk.Frame):
         send_size += list_size
         link.send(send_size)
 
-
 class PageTwo(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -1255,9 +1254,7 @@ class PageTwo(tk.Frame):
         list_size = link.tx_obj(1)
         send_size += list_size
         link.send(send_size)
-        #ds1.place(x=165,y=260)
-        #ds2.place(x=165,y=410)
-        #ds3.place(x=165,y=560)
+
 class PageThree(tk.Frame):
 
     def __init__(self, parent=None, controller=""):
@@ -1317,35 +1314,6 @@ class PageThree(tk.Frame):
         while not link.available():
             arr = link.rx_obj(obj_type='i')
             print(arr)
-            # while arr == 1093664768:
-            #     print("fail")
-            #     send_size = 0
-            #     list_size = link.tx_obj(3)
-            #     send_size += list_size
-            #     link.send(send_size)
-            #     send_size = 0
-            #     list_size = link.tx_obj(9)
-            #     send_size += list_size
-            #     link.send(send_size)
-            #     while not link.available():rc=0
-            #     arr = link.rx_obj(obj_type='i')
-            # if arr == 1092616192:
-            #     print("enrolled")
-            #     send_size = 0
-            #     list_size = link.tx_obj(1)
-            #     send_size += list_size
-            #     link.send(send_size)
-            #     send_size = 0
-            #     list_size = link.tx_obj(9)
-            #     send_size += list_size
-            #     link.send(send_size)
-            # while not link.available():rc=0
-            # id = link.rx_obj(obj_type='i')
-            # print(id)
-        # while True:
-        #     if link.available():
-        #         y = link.rx_obj(obj_type='i')
-        #         print(y)
 
 class PageFour(tk.Frame):
 
