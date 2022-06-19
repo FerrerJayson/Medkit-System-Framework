@@ -15,7 +15,7 @@ class ActiveScreen(tk.Frame):
 
         df = pd.read_csv("./accounts/admin.csv")
         meds = [med for med in df['Medication']]
-        doses = [int(dose) for dose in df['Dose']]
+        doses = [dose for dose in df['Dose']]
         end_dates = [end for end in df['End Date']]
         times = [df['First Dose'][0],df['Second Dose'][0],df['Third Dose'][0],df['Fourth Dose'][0],df['Fifth Dose'][0]]
         y_increment = 0

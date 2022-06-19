@@ -3,7 +3,7 @@ import time
 import pandas as pd
 from pygame import mixer
 import os.path
-from variables import link, login, pin, board, BayOne, BayTwo, BayThree, BayFour, BayFive, BaySix, BaySeven, BayEight, BayNine
+from variables import link, board, BayOne, BayTwo, BayThree, BayFour, BayFive, BaySix, BaySeven, BayEight, BayNine, user
 name_entry_flag = 0
 pin_entry_flag = 0
 
@@ -13,6 +13,7 @@ def play(name):
 
 class StartPage(tk.Frame):
 
+    global user
     def __init__(self, parent, controller):
 
         tk.Frame.__init__(self, parent,height=800,width=1260,bg="#ffffff")
@@ -64,8 +65,6 @@ class StartPage(tk.Frame):
                 username_entry.delete(len(username_entry.get())-1)
 
             elif value == "ENTER":
-                global login
-                login = username_entry.get()
                 enter()
 
             else:
@@ -93,6 +92,7 @@ class StartPage(tk.Frame):
         keypad_buttons=[]
         
         def enter_keypad():
+            global username, passcode
             for b in keypad_buttons:
                 b.place_forget()
             name=username_entry.get()
@@ -101,6 +101,8 @@ class StartPage(tk.Frame):
             pin = str(df['Pin'][0])
             if os.path.exists(f'./accounts/{name}.csv'):
                 if pin.rstrip(pin[-1]) == str(pas):
+                    user.name=name
+                    user.pin=pin
                     controller.show_frame("PageOne")
                     passnentry.delete(0, tk.END)
                     play('entersucess')

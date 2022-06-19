@@ -2,7 +2,7 @@ import tkinter as tk
 import pandas as pd
 import csv
 from pygame import mixer
-from variables import login, pin
+from variables import user
 
 mixer.init()
 name_entry_flag = 0
@@ -13,7 +13,7 @@ def play(name):
     sfx.play()
 
 class NamePage(tk.Frame):
-
+    global user
     def __init__(self, parent, controller):
     
         tk.Frame.__init__(self, parent,height=800,width=1260,bg="#ffffff")
@@ -51,15 +51,13 @@ class NamePage(tk.Frame):
         back_button.place(x=10, y=10)
 
         def create_account():
-            global login
             header = ['Medication', 'Dose', 'Start Date', 'End Date', 'First Dose', 'Second Dose', 'Third Dose', 'Fourth Dose', 'Fifth Dose', 'Pin']
-            file = open(f"./accounts/{login}.csv", "w", newline='')
+            file = open(f"./accounts/{user.name}.csv", "w", newline='')
             writer = csv.writer(file)
             writer.writerow(header)
             
         def enter():
-                global login
-                login = username_entry.get()
+                user.name = username_entry.get()
                 create_account()
                 controller.show_frame("PinPage")
 
@@ -110,8 +108,6 @@ class PinPage(tk.Frame):
         tk.Frame.__init__(self, parent,height=800,width=1260,bg="#ffffff")
         self.bind("<<ShowFrame>>", self.on_show_frame)
         self.controller = controller
-
-        global login
         owimg= tk.PhotoImage(file="ownum.png")
         self.owimg=owimg
         owpanel=tk.Label(self,image=owimg,borderwidth=0)
@@ -126,8 +122,6 @@ class PinPage(tk.Frame):
         blank1.place(x=365,y=237)
         btn_bg3= tk.PhotoImage(file="reg.png")
         self.btn_bg3= btn_bg3
-        dtpanel4=tk.Label(self,text=f"Welcome {login}",fg="black", bg="white",borderwidth=0,font=('Helvetica',40), justify='center')
-        dtpanel4.place(x=400,y=155)
         pin_entry = tk.Entry(self,fg="black", bg="white", width=15,borderwidth=0,font=('Helvetica',40), justify='center', show="*")
         pin_entry.insert(0, "Enter pin")
         pin_entry.place( x=375,y=250)
@@ -136,11 +130,10 @@ class PinPage(tk.Frame):
         button=[]
         
         def enter():
-            global pin
-            pin = pin_entry.get()
-            file = open(f"./accounts/{login}.csv", "a", newline='')
+            user.pin = pin_entry.get()
+            file = open(f"./accounts/{user.name}.csv", "a", newline='')
             writer = csv.writer(file)
-            writer.writerow(['','','','','','','','','',str(pin)+'x'])
+            writer.writerow(['','','','','','','','','',str(user.pin)+'x'])
             controller.show_frame("PinConfirmPage")
 
         def select(value):
@@ -180,7 +173,8 @@ class PinPage(tk.Frame):
         pin_entry.bind("<1>", usrclicked)
 
     def on_show_frame(self, event):
-        pass
+        dtpanel4=tk.Label(self,text=f"Welcome {user.name}",fg="black", bg="white",borderwidth=0,font=('Helvetica',40), justify='center')
+        dtpanel4.place(x=400,y=155)
 
 class PinConfirmPage(tk.Frame):
 
@@ -205,7 +199,7 @@ class PinConfirmPage(tk.Frame):
         blank1.place(x=365,y=237)
         btn_bg3= tk.PhotoImage(file="reg.png")
         self.btn_bg3= btn_bg3
-        dtpanel4=tk.Label(self,text=f"Welcome {login}",fg="black", bg="white",borderwidth=0,font=('Helvetica',40), justify='center')
+        dtpanel4=tk.Label(self,text=f"Welcome {user.name}",fg="black", bg="white",borderwidth=0,font=('Helvetica',40), justify='center')
         dtpanel4.place(x=400,y=155)
         pin_entry = tk.Entry(self,fg="black", bg="white", width=15,borderwidth=0,font=('Helvetica',40), justify='center', show="*")
         pin_entry.insert(0, "Confirm pin")
@@ -215,9 +209,8 @@ class PinConfirmPage(tk.Frame):
         button=[]
         
         def enter():
-            global pin
             pin_confirm = pin_entry.get()
-            if pin != pin_confirm:
+            if user.pin != pin_confirm:
                 play("wpin")
                 controller.show_frame("PinPage")
             

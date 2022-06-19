@@ -2,8 +2,9 @@ import tkinter as tk
 from pySerialTransfer import pySerialTransfer as txfer
 from tkcalendar import Calendar
 import time
+import csv
 from pygame import mixer
-from variables import login, pin, time1, time2, time3, time4, time5
+from variables import user
 
 def play(name):
     sfx= mixer.Sound(f"./audios/{name}.wav")
@@ -15,7 +16,7 @@ date1 = ""
 date2 = ""
 
 class PageOne(tk.Frame):
-
+    global user
     def __init__(self, parent, controller):
         clicked = tk.StringVar()
         
@@ -40,6 +41,7 @@ class PageOne(tk.Frame):
         whtdose=tk.Label(self,image=wht,borderwidth=0)
         btn_dose= tk.PhotoImage(file="dday.png")
         self.btn_dose=btn_dose
+        line=""
 
         keys=['1','2','3','4','5','6','7','8','9','0','_',
             'Q','W','E','R','T','Y','U','I','O','P','DELETE',
@@ -49,8 +51,10 @@ class PageOne(tk.Frame):
         button=[]
             
         def enter():
+            global flag
             for b in button:
                 b.place_forget()
+            flag = 0
 
         def select(value):
             if value == "DELETE":
@@ -79,50 +83,19 @@ class PageOne(tk.Frame):
                     varColumn = 0
                     varRow += 75
 
-        def medm(event):
-            global flag5
-            global flag
-            if flag5 != 1:
-                mednn.delete(0, tk.END)
-                mednn.config(fg="black")
-                
-                flag5 = 1   
-            flag = 0
-            btnsel()
-
-        mednn.bind("<1>", medm)
-
         def btnsel():
             global flag
             if flag == 0:
                 show_keyboard()
                 sel.place_forget()
                 whtp.place(x=41 ,y=323)
-                # whtpt.place(x=41 ,y=323)
                 mednn.place(x=51 ,y=363)
                 play('entermed')
                 flag = 1
-                
-            else:
-                #medname=medn.get()
-                #mednn.delete(0, END)
-                #whtpt.config(text=medname)
-                sel.place_forget()
-                whtp.place(x=41 ,y=323)
-                whtpt.place(x=55 ,y=410)
-                #subprocess.call("barcoderead.py", shell=True)
-                with open('barcode_result.txt') as f:
-                    global line
-                    line = f.readline()
-                    f.close()
-                    print("code is " + line)
-                whtpt.config(text=line)
-                sel.place_forget()
-                whtp.place(x=41 ,y=323)
-                whtpt.place(x=55 ,y=410)
-                play('enterdose')
 
         def btndose():
+            for b in button:
+                b.place_forget()
             dosebtn.place_forget()
             dose.place(x=470,y=353)
             whtdose.place(x=446,y=323)
@@ -149,7 +122,11 @@ class PageOne(tk.Frame):
         menu.config(font=('Helvetica', 40))
 
         def change():
-            clkpcd.config(text="Click to Finish",command=pg3)
+            global line
+            file = open(f"./accounts/{user.name}.csv", "a", newline='')
+            line = mednn.get()
+            writer = csv.writer(file)
+            writer.writerow([line,dosep[0],'','','','','','','',str(user.pin)+'x'])
             controller.show_frame("PageThree")
 
         def pg3():
@@ -165,7 +142,6 @@ class PageOne(tk.Frame):
             global labelmore,labelmore2
             labelmore = tk.Label(self,text="7:00AM / 12:00PM / 7:00PM", font=('Helvetica', 20),bg="white")
             labelmore2 = tk.Label(self,text="", font=('Helvetica', 20),bg="white")
-            global pilidose
             print (dosep)
             controller.show_frame("PageTwo")
             clkpcd.place(x=500 ,y=600)
@@ -182,7 +158,67 @@ class PageOne(tk.Frame):
         logout.place(x=1000,y=50)
     
     def on_show_frame(self, event):
-        pass
+        global pilidose,time1,time2,time3,time4,time5
+        time1= hr +":"+mins+pm
+        time2= hr1 +":"+mins1+pm1
+        time3= hr2 +":"+mins2+pm2
+        time4= hr3 +":"+mins3+pm3
+        time5= hr4 +":"+mins4+pm4
+        with open("alarm1.txt", mode ='w') as file1:
+            if int(hr) < 10 and int(mins) < 10 :
+                file1.write("0"+hr +":00 "+pm)
+            elif int(hr) < 10 :
+                file1.write("0"+hr +":"+mins+" "+pm)
+            else:
+                file1.write(hr +":"+mins+" "+pm)
+        with open("alarm2.txt", mode ='w') as file2:
+            if int(hr1) < 10 and int(mins1) < 10 :
+                file2.write("0"+hr1 +":00 "+pm1)
+            elif int(hr1) < 10 :
+                file2.write("0"+hr1 +":"+mins1+" "+pm1)
+            else:
+                file2.write(hr1 +":"+mins1+" "+pm1)
+        with open("alarm3.txt", mode ='w') as file3:
+            if int(hr2) < 10 and int(mins2) < 10 :
+                file3.write("0"+hr2 +":00 "+pm2)
+            elif int(hr2) < 10 :
+                file3.write("0"+hr2 +":"+mins2+" "+pm2)
+            else:
+                file3.write(hr2 +":"+mins2+" "+pm2)
+        with open("alarm4.txt", mode ='w') as file4:
+            if int(hr3) < 10 and int(mins3) < 10 :
+                file4.write("0"+hr3 +":00 "+pm3)
+            elif int(hr1) < 10 :
+                file4.write("0"+hr3 +":"+mins3+" "+pm3)
+            else:
+                file4.write(hr3 +":"+mins3+" "+pm3)
+        with open("alarm5.txt", mode ='w') as file5:
+            if int(hr4) < 10 and int(mins4) < 10 :
+                file5.write("0"+hr4 +":00 "+pm4)
+            elif int(hr4) < 10 :
+                file5.write("0"+hr4 +":"+mins4+" "+pm4)
+            else:
+                file5.write(hr4 +":"+mins4+" "+pm4)
+        if dosep=="1 dose a day":
+            labelmore.config(text="              "+ hr2 +":"+mins2+pm2)
+            pilidose =1
+        elif dosep=="2 dose a day":
+            labelmore.config(text="   "+hr +":"+mins+pm+" / "+hr2 +":"+ mins2 +pm2)
+            pilidose =2
+        elif dosep=="3 dose a day":
+            labelmore.config(text=hr +":"+mins+pm+" / "+hr2 +":"+ mins2 +pm2+" / "+hr4 +":"+ mins4 +pm4)
+            pilidose =3
+        elif dosep=="4 dose a day":
+            labelmore.config(text=hr +":"+mins+pm+" / "+hr1 +":"+ mins1 +pm1+" / "+hr2 +":"+ mins2 +pm2)
+            labelmore2.config(text="              "+ hr3 +":"+mins3+pm3)
+            pilidose =4
+            labelmore2.place(x=880,y=440)
+        elif dosep=="5 dose a day":
+            labelmore.config(text=hr +":"+mins+pm+" / "+hr1 +":"+ mins1 +pm1+" / "+hr2 +":"+ mins2 +pm2)
+            labelmore2.config(text="   "+hr3 +":"+mins3+pm3+" / "+hr4 +":"+ mins4 +pm4)
+            pilidose =5
+            labelmore2.place(x=880,y=440)
+        labelmore.place(x=880,y=400)
 
 class PageTwo(tk.Frame):
 
@@ -477,5 +513,6 @@ class PageThree(tk.Frame):
         clkpcd.place(x=490 ,y=600)
 
     def on_show_frame(self, event):
+        
         label1.config(text="Place "+   line + " at lit up Medicine Bay")
         play("placemed")

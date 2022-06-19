@@ -1,5 +1,6 @@
 from pySerialTransfer import pySerialTransfer as txfer
 import pyfirmata
+from tkinter import *
 
 #comport
 
@@ -42,5 +43,10 @@ time4=""
 time5="" 
 
 #login variables
-login = "admin"
-pin = "1234"
+
+class Userdata:
+    def __init__(self, name, pin) -> None:
+        self.name = name
+        self.pin = pin
+
+user= Userdata("admin", "1234x")
