@@ -4,6 +4,7 @@ from mainscreen import ActiveScreen, HomePage
 from medication_setup import PageOne, PageTwo, PageThree, PageFour
 from login import StartPage
 from pySerialTransfer import pySerialTransfer as txfer
+from variables import board, BayOne, BayTwo, BayThree, BayFour, BayFive, BaySix, BaySeven, BayEight, BayNine
 
 class MedkitUI(tk.Tk):
 

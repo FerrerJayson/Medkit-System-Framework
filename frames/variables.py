@@ -1,13 +1,15 @@
 from pySerialTransfer import pySerialTransfer as txfer
+import pyfirmata
 
 #comport
 comPort="COM6"
-link = txfer.SerialTransfer('COM6', 9600) #chang port number accordingly
+link = txfer.SerialTransfer('COM3', 9600) #chang port number accordingly
 link.open()
+board = pyfirmata.Arduino('COM6')
 
 #Bay Light analogWrite(pin,150)
-BayOne=2
-BayTwo=3
+BayOne=board.get_pin('d:3:p')
+BayTwo=board.get_pin('d:2:o')
 BayThree=4
 BayFour=5
 BayFive=6
@@ -26,6 +28,10 @@ BaySix_sensor="A5"
 BaySeven_sensor="A6"
 BayEight_sensor="A7"
 BayNine_sensor="A8"
+
+#LED color
+# red = board.get_pin('a:11:o')
+# green = board.get_pin('a:9:o')
 
 #time
 dosep=""

@@ -2,12 +2,11 @@ import tkinter as tk
 import pandas as pd
 import csv
 from pygame import mixer
+from variables import login, pin
 
 mixer.init()
 name_entry_flag = 0
 pin_entry_flag = 0
-login="admin"
-pin="1234"
 
 def play(name):
     sfx= mixer.Sound(f"./audios/{name}.wav")
@@ -21,7 +20,6 @@ class NamePage(tk.Frame):
         self.controller = controller
         self.bind("<<ShowFrame>>", self.on_show_frame)
 
-        name_var= tk.StringVar()
         owimg= tk.PhotoImage(file="ownum.png")
         self.owimg=owimg
         owpanel=tk.Label(self,image=owimg,borderwidth=0)
@@ -36,36 +34,32 @@ class NamePage(tk.Frame):
         blank1.place(x=365,y=237)
         btn_bg3= tk.PhotoImage(file="./graphics/reg.png")
         self.btn_bg3= btn_bg3
-        username_entry = tk.Entry(self,fg="black", bg="white",textvariable=name_var, width=16,borderwidth=0,font=('Helvetica', 40), justify='center')
+        username_entry = tk.Entry(self,fg="black", bg="white", width=16,borderwidth=0,font=('Helvetica', 40), justify='center')
         username_entry.insert(0, "Enter your name")
         username_entry.place( x=375,y=250)
         keys=['1','2','3','4','5','6','7','8','9','0','_',
             'Q','W','E','R','T','Y','U','I','O','P','DELETE',
             'A','S','D','F','G','H','J','K','L',':','"',
-            'Z','X','C','V','B','N','M','<','>','?','ENTER',
-            ' SPACE ']
+            'Z','X','C','V','B','N','M','<','>','?','ENTER']
 
         button=[]
 
         def create_account():
             global login
             header = ['Medication', 'Dose', 'Start Date', 'End Date', 'First Dose', 'Second Dose', 'Third Dose', 'Fourth Dose', 'Fifth Dose', 'Pin']
-            file = open(f"{login}.csv", "w", newline='')
+            file = open(f"./accounts/{login}.csv", "w", newline='')
             writer = csv.writer(file)
             writer.writerow(header)
             
         def enter():
                 global login
-                login = name_var.get()
+                login = username_entry.get()
                 create_account()
                 controller.show_frame("PinPage")
 
         def select(value):
             if value == "DELETE":
                 username_entry.delete(len(username_entry.get())-1)
-
-            elif value == " SPACE ":
-                username_entry.insert(tk.END, ' ')
 
             elif value == "ENTER":
                 enter()
@@ -77,21 +71,13 @@ class NamePage(tk.Frame):
             index = 0
             varRow = 2
             varColumn = 0
-            cap=0
             for letter in keys:
                 command = lambda x=letter: select(x)
-                if letter == " SPACE ":
-                    button.append(tk.Button(self, text=letter, width=60, bg="#22272c", fg="#ffffff",
-                        activebackground="#2a4158", activeforeground="#ffffff", relief="raised", padx=100,
-                        pady=20, bd=4, font=("Helvetica", 14), command=command))
-                    button[index].place(x=200, y=705)
-
-                else:
-                    button.append(tk.Button(self, text=letter, width=5, bg="#22272c", fg="#ffffff",
-                        activebackground="#2a4158", activeforeground="#ffffff", relief="raised", padx=10,
-                        pady=10, bd=4, font=("Helvetica", 20), justify="center", command=command))
-                    button[index].place(y=varRow+400, x=varColumn+20)
-                    index+=1
+                button.append(tk.Button(self, text=letter, width=5, bg="#22272c", fg="#ffffff",
+                    activebackground="#2a4158", activeforeground="#ffffff", relief="raised", padx=10,
+                    pady=10, bd=4, font=("Helvetica", 20), justify="center", command=command))
+                button[index].place(y=varRow+400, x=varColumn+20)
+                index+=1
 
                 varColumn += 110
                 if varColumn > 1200:
@@ -119,7 +105,7 @@ class PinPage(tk.Frame):
         self.bind("<<ShowFrame>>", self.on_show_frame)
         self.controller = controller
 
-        pin_var= tk.StringVar()
+        global login
         owimg= tk.PhotoImage(file="ownum.png")
         self.owimg=owimg
         owpanel=tk.Label(self,image=owimg,borderwidth=0)
@@ -136,7 +122,7 @@ class PinPage(tk.Frame):
         self.btn_bg3= btn_bg3
         dtpanel4=tk.Label(self,text=f"Welcome {login}",fg="black", bg="white",borderwidth=0,font=('Helvetica',40), justify='center')
         dtpanel4.place(x=400,y=155)
-        pin_entry = tk.Entry(self,fg="black", bg="white",textvariable=pin_var, width=15,borderwidth=0,font=('Helvetica',40), justify='center')
+        pin_entry = tk.Entry(self,fg="black", bg="white", width=15,borderwidth=0,font=('Helvetica',40), justify='center', show="*")
         pin_entry.insert(0, "Enter pin")
         pin_entry.place( x=375,y=250)
         keys=['1','2','3','4','5','6','7','8','9','DELETE','0','ENTER']
@@ -145,8 +131,8 @@ class PinPage(tk.Frame):
         
         def enter():
             global pin
-            pin = pin_var.get()
-            file = open(f"{login}.csv", "a", newline='')
+            pin = pin_entry.get()
+            file = open(f"./accounts/{login}.csv", "a", newline='')
             writer = csv.writer(file)
             writer.writerow(['','','','','','','','','',pin])
             controller.show_frame("PinConfirmPage")
@@ -190,7 +176,6 @@ class PinPage(tk.Frame):
     def on_show_frame(self, event):
         pass
 
-
 class PinConfirmPage(tk.Frame):
 
     def __init__(self, parent, controller):
@@ -199,7 +184,7 @@ class PinConfirmPage(tk.Frame):
         self.bind("<<ShowFrame>>", self.on_show_frame)
         self.controller = controller
 
-        pin_confirm_var= tk.StringVar()
+
         owimg= tk.PhotoImage(file="ownum.png")
         self.owimg=owimg
         owpanel=tk.Label(self,image=owimg,borderwidth=0)
@@ -216,7 +201,7 @@ class PinConfirmPage(tk.Frame):
         self.btn_bg3= btn_bg3
         dtpanel4=tk.Label(self,text=f"Welcome {login}",fg="black", bg="white",borderwidth=0,font=('Helvetica',40), justify='center')
         dtpanel4.place(x=400,y=155)
-        pin_entry = tk.Entry(self,fg="black", bg="white",textvariable=pin_confirm_var, width=15,borderwidth=0,font=('Helvetica',40), justify='center')
+        pin_entry = tk.Entry(self,fg="black", bg="white", width=15,borderwidth=0,font=('Helvetica',40), justify='center', show="*")
         pin_entry.insert(0, "Confirm pin")
         pin_entry.place( x=375,y=250)
         keys=['1','2','3','4','5','6','7','8','9','DELETE','0','ENTER']
@@ -225,7 +210,7 @@ class PinConfirmPage(tk.Frame):
         
         def enter():
             global pin
-            pin_confirm = pin_confirm_var.get()
+            pin_confirm = pin_entry.get()
             if pin != pin_confirm:
                 play("wpin")
                 controller.show_frame("PinPage")

@@ -3,7 +3,7 @@ from pySerialTransfer import pySerialTransfer as txfer
 from tkcalendar import Calendar
 import time
 from pygame import mixer
-from variables import login, pin
+from variables import login, pin, time1, time2, time3, time4, time5
 
 def play(name):
     sfx= mixer.Sound(f"./audios/{name}.wav")
@@ -152,36 +152,12 @@ class PageOne(tk.Frame):
             global labelmore,labelmore2
             labelmore = tk.Label(self,text="7:00AM / 12:00PM / 7:00PM", font=('Helvetica', 30),bg="white")
             labelmore2 = tk.Label(self,text="", font=('Helvetica', 30),bg="white")
-            global pilidose
             print (dosep)
-            # if dosep=="1 dose a day":
-            #     labelmore.config(text="         7:00AM       ")
-            #     pilidose =1
-            # elif dosep=="2 dose a day":
-            #     labelmore.config(text="   7:00AM / 7:00PM    ")
-            #     pilidose =2
-            # elif dosep=="3 dose a day":
-            #     labelmore.config(text="7:00AM / 12:00PM / 7:00PM")
-            #     pilidose =3
-            # elif dosep=="4 dose a day":
-            #     labelmore.config(text="7:00AM / 11:00AM / 3:00PM")
-            #     labelmore2.config(text="         7:00PM         ")
-            #     labelmore2.place(x=880,y=440)
-            #     pilidose =4
-            # elif dosep=="5 dose a day":
-            #     labelmore.config(text="7:00AM / 10:00AM / 1:00PM")
-            #     labelmore2.config(text="     4:00PM / 7:00PM     ")
-            #     labelmore2.place(x=880,y=440)
-            #     pilidose =5
-            # labelmore.place(x=880,y=400)
             controller.show_frame("PageTwo")
             clkpcd.place(x=500 ,y=600)
             global flag6
             flag6 =1
-
-
-        global date2
-        global date1  
+  
         btn_date= tk.PhotoImage(file="tsched.png")
         self.btn_date=btn_date
         datebtn=tk.Button(self,borderwidth=0,image=btn_date,command=dateiton)
@@ -191,7 +167,7 @@ class PageOne(tk.Frame):
         logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("StartPage"))
         logout.place(x=1000,y=700)
     def on_show_frame(self, event):
-        global pilidose,time1,time2,time3,time4,time5
+        global time1,time2,time3,time4,time5
         time1= hr +":"+mins+pm
         time2= hr1 +":"+mins1+pm1
         time3= hr2 +":"+mins2+pm2
@@ -234,22 +210,17 @@ class PageOne(tk.Frame):
                 file5.write(hr4 +":"+mins4+" "+pm4)
         if dosep=="1 dose a day":
             labelmore.config(text="              "+ hr2 +":"+mins2+pm2)
-            pilidose =1
         elif dosep=="2 dose a day":
             labelmore.config(text="   "+hr +":"+mins+pm+" / "+hr2 +":"+ mins2 +pm2)
-            pilidose =2
         elif dosep=="3 dose a day":
             labelmore.config(text=hr +":"+mins+pm+" / "+hr2 +":"+ mins2 +pm2+" / "+hr4 +":"+ mins4 +pm4)
-            pilidose =3
         elif dosep=="4 dose a day":
             labelmore.config(text=hr +":"+mins+pm+" / "+hr1 +":"+ mins1 +pm1+" / "+hr2 +":"+ mins2 +pm2)
             labelmore2.config(text="              "+ hr3 +":"+mins3+pm3)
-            pilidose =4
             labelmore2.place(x=880,y=440)
         elif dosep=="5 dose a day":
             labelmore.config(text=hr +":"+mins+pm+" / "+hr1 +":"+ mins1 +pm1+" / "+hr2 +":"+ mins2 +pm2)
             labelmore2.config(text="   "+hr3 +":"+mins3+pm3+" / "+hr4 +":"+ mins4 +pm4)
-            pilidose =5
             labelmore2.place(x=880,y=440)
         labelmore.place(x=880,y=400)
 
@@ -603,15 +574,15 @@ class PageFour(tk.Frame):
         #AMT.place(x=830,y=160)
         global lb1,lb2,lb3,lb4,lb5
         
-        lb1 = tk.Label(self , text = time1 ,font=('Helvetica', 35),bg= "white",borderwidth=0) 
+        lb1 = tk.Label(self , text = time1, font=('Helvetica', 35), bg= "white", borderwidth=0) 
         lb1.place(x=830,y=160)
-        lb2=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
+        lb2=tk.Label(self, text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
         lb2.place(x=830,y=270)
-        lb3=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
+        lb3=tk.Label(self, text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
         lb3.place(x=830,y=370)
-        lb4=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
+        lb4=tk.Label(self,text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
         lb4.place(x=830,y=470)
-        lb5=tk.Label(self,text= "",bg="white",font=('Helvetica', 35),borderwidth=0)
+        lb5=tk.Label(self, text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
         lb5.place(x=830,y=570)
 
         logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("StartPage"))
@@ -636,12 +607,12 @@ class PageFour(tk.Frame):
             '12': "DEC",
             }
             return switcher.get(x, "")
-        if pilidose ==1: 
+        if int(dosep[0]) ==1: 
             #AMT.config(image=dose1)
             labe3.config(text=line)
             labe8.config(text="till "+ month(day2[0])+" "+ day2[1])
             lb3.config(text=time3)
-        if pilidose ==2: 
+        if int(dosep[0]) ==2: 
             #AMT.config(image=dose2)
             labe2.config(text=line)
             labe7.config(text="till "+ month(day2[0])+" "+ day2[1])
@@ -649,7 +620,7 @@ class PageFour(tk.Frame):
             labe9.config(text="till "+ month(day2[0])+" "+ day2[1])
             lb2.config(text=time1)
             lb4.config(text=time3)
-        if pilidose ==3: 
+        if int(dosep[0]) ==3: 
             #AMT.config(image=dose3)
             labe1.config(text=line)
             labe6.config(text="till "+ month(day2[0])+" "+ day2[1])
@@ -662,7 +633,7 @@ class PageFour(tk.Frame):
             lb3.config(text=time3)
             lb4.config(text="")
             lb5.config(text=time5)
-        if pilidose ==4: 
+        if int(dosep[0]) ==4: 
             #AMT.config(image=dose4)
             labe1.config(text=line)
             labe6.config(text="till "+ month(day2[0])+" "+ day2[1])
@@ -677,7 +648,7 @@ class PageFour(tk.Frame):
             lb3.config(text=time3)
             lb4.config(text=time4)
 
-        if pilidose ==5: 
+        if int(dosep[0]) ==5: 
             #AMT.config(image=dose5)
             labe1.config(text=line)
             labe6.config(text="till "+ month(day2[0])+" "+day2[1])
