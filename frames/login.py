@@ -22,8 +22,6 @@ class StartPage(tk.Frame):
         self.btn_bg= btn_bg   
         btn_bg3= tk.PhotoImage(file="fing.png")
         self.btn_bg3= btn_bg3
-        name_var=tk.StringVar()
-        passw_var=tk.StringVar()
         wrgloh=tk.Label(self,text="Wrong Username or Password",font=('Helvetica', 20),bg="white",fg="#D9D9D9",borderwidth=0)
         userimg= tk.PhotoImage(file="user.png")
         self.userimg=userimg
@@ -31,15 +29,18 @@ class StartPage(tk.Frame):
         self.passimg=passimg
         usrpanel=tk.Label(self,image=userimg,borderwidth=0)
         usrpanel.place(x=200,y=300)
-        username_entry = tk.Entry(self,fg="#D9D9D9", bg="#F8F8F8",textvariable=name_var, width=28,borderwidth=0,font=('Helvetica', 20))
+        username_entry = tk.Entry(self,fg="#D9D9D9", bg="#F8F8F8", width=28,borderwidth=0,font=('Helvetica', 20))
         username_entry.insert(0, "  Username")
         username_entry.place( x=280,y=310)
         passpanel=tk.Label(self,image=passimg,borderwidth=0)
         passpanel.place(x=200,y=390)
-        passnentry = tk.Entry(self,fg="#D9D9D9", bg="#F8F8F8", width=28,textvariable=passw_var,borderwidth=0,font=('Helvetica', 20),show="*")
+        passnentry = tk.Entry(self,fg="#D9D9D9", bg="#F8F8F8", width=28,borderwidth=0,font=('Helvetica', 20),show="*")
         passnentry.insert(0, "  Password")
         passnentry.place( x=280,y=400)
-        print(login, pin)
+
+        def back():
+            controller.show_frame("HomePage")
+
 
         def printme():
             pass
@@ -64,7 +65,7 @@ class StartPage(tk.Frame):
 
             elif value == "ENTER":
                 global login
-                login = name_var.get()
+                login = username_entry.get()
                 enter()
 
             else:
@@ -94,14 +95,14 @@ class StartPage(tk.Frame):
         def enter_keypad():
             for b in keypad_buttons:
                 b.place_forget()
-            name=name_var.get()
-            pas=passw_var.get()
-            username_entry.delete(0, tk.END)
-            passnentry.delete(0, tk.END)
+            name=username_entry.get()
+            pas=passnentry.get()
+            df = pd.read_csv(f'./accounts/{name}.csv')
+            pin = str(df['Pin'][0])
             if os.path.exists(f'./accounts/{name}.csv'):
-                df = pd.read_csv(f'./accounts/{name}.csv')
-                if str(df['Pin'][0]) == pas:
+                if pin.rstrip(pin[-1]) == str(pas):
                     controller.show_frame("PageOne")
+                    passnentry.delete(0, tk.END)
                     play('entersucess')
                 else:
                     play('wpin')
@@ -112,7 +113,7 @@ class StartPage(tk.Frame):
 
         def select_keypad(value):
                 if value == "DELETE":
-                    passnentry.delete(len(passw_var.get())-1)
+                    passnentry.delete(len(passnentry.get())-1)
 
                 elif value == "ENTER":
                     enter_keypad()
@@ -142,6 +143,8 @@ class StartPage(tk.Frame):
         self.owimg=owimg
         owpanel=tk.Label(self,image=owimg,borderwidth=0)
         owpanel.place(x=170,y=54)
+        back_button = tk.Button(self, text="BACK", font= ('Helvetica', 20), command=back)
+        back_button.place(x=10, y=10)
         
         #display additional designs
         ntimg= tk.PhotoImage(file="next.png")

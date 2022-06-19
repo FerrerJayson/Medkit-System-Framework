@@ -18,7 +18,7 @@ from pySerialTransfer import pySerialTransfer as txfer
 from pygame import mixer
 #Make sure to install necessary modules
 
-link = txfer.SerialTransfer('COM6', 9600) #chang port number accordingly
+link = txfer.SerialTransfer('COM16', 9600) #chang port number accordingly
 link.open()
 time.sleep(2)
 send_size = 0

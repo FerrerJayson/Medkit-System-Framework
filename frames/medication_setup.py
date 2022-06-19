@@ -9,11 +9,15 @@ def play(name):
     sfx= mixer.Sound(f"./audios/{name}.wav")
     sfx.play()
 
+flag = 0
+flag2 = 0
+date1 = ""
+date2 = ""
+
 class PageOne(tk.Frame):
 
     def __init__(self, parent, controller):
-        clicked_dose = tk.StringVar()
-        clicked_meds = tk.StringVar()
+        clicked = tk.StringVar()
         
         tk.Frame.__init__(self, parent,bg="#ffffff")
         self.controller = controller
@@ -22,11 +26,59 @@ class PageOne(tk.Frame):
         self.owimg=owimg
         owpanel=tk.Label(self,image=owimg,borderwidth=0)
         owpanel.place(x=60,y=51)
-
         medimg= tk.PhotoImage(file="medcalen.png")
         self.medimg=medimg
         medpanel=tk.Label(self,image=medimg,borderwidth=0)
         medpanel.place(x=40,y=200)
+        wht= tk.PhotoImage(file="white bg.png")
+        self.wht=wht
+        whtp=tk.Label(self,image=wht,borderwidth=0)
+        whtpt=tk.Label(self,text="",width=15,font=('Helvetica', 20),borderwidth=0,bg="white")
+        mednn=tk.Entry(self, bg="white", width=13,borderwidth=0,font=('Helvetica', 35), justify='center')
+        btn_sel= tk.PhotoImage(file="inmed.png")
+        self.btn_sel=btn_sel
+        whtdose=tk.Label(self,image=wht,borderwidth=0)
+        btn_dose= tk.PhotoImage(file="dday.png")
+        self.btn_dose=btn_dose
+
+        keys=['1','2','3','4','5','6','7','8','9','0','_',
+            'Q','W','E','R','T','Y','U','I','O','P','DELETE',
+            'A','S','D','F','G','H','J','K','L',':','"',
+            'Z','X','C','V','B','N','M','<','>','?','ENTER']
+
+        button=[]
+            
+        def enter():
+            for b in button:
+                b.place_forget()
+
+        def select(value):
+            if value == "DELETE":
+                mednn.delete(len(mednn.get())-1)
+
+            elif value == "ENTER":
+                enter()
+
+            else:
+                mednn.insert(tk.END, value)
+
+        def show_keyboard():
+            index = 0
+            varRow = 2
+            varColumn = 0
+            for letter in keys:
+                command = lambda x=letter: select(x)
+                button.append(tk.Button(self, text=letter, width=5, bg="#22272c", fg="#ffffff",
+                    activebackground="#2a4158", activeforeground="#ffffff", relief="raised", padx=10,
+                    pady=10, bd=4, font=("Helvetica", 20), justify="center", command=command))
+                button[index].place(y=varRow+480, x=varColumn+20)
+                index+=1
+
+                varColumn += 110
+                if varColumn > 1200:
+                    varColumn = 0
+                    varRow += 75
+
         def medm(event):
             global flag5
             global flag
@@ -38,39 +90,25 @@ class PageOne(tk.Frame):
             flag = 0
             btnsel()
 
-        camimg= tk.PhotoImage(file="cam.png")
-        self.camimg=camimg
-        camimg2= tk.PhotoImage(file="success.png")
-        self.camimg2=camimg2
-        campanel=tk.Label(self,image=camimg,borderwidth=0)
-        wht= tk.PhotoImage(file="white bg.png")
-        self.wht=wht
-        whtp=tk.Label(self,image=wht,borderwidth=0)
-        whtpt=tk.Label(self,text="",width=15,font=('Helvetica', 30),borderwidth=0,bg="white")
-        medn=tk.StringVar()
-        mednn=tk.Entry(self,fg="#D9D9D9", bg="white", width=30,textvariable=medn,borderwidth=0,font=('Helvetica', 20))
-        mednn.insert(0,"   Type Here   ")
         mednn.bind("<1>", medm)
+
         def btnsel():
             global flag
             if flag == 0:
-                campanel.config(image=camimg)
-                campanel.place(x=440,y=1)
-                btn_meds.config(image="cte.png")
-                #mednn.place(x=50,y=320)
-                btn_meds.place(x=41 ,y=373)
-                whtp.place_forget()
-                whtpt.place_forget()
-                play("entermed")
+                show_keyboard()
+                sel.place_forget()
+                whtp.place(x=41 ,y=323)
+                # whtpt.place(x=41 ,y=323)
+                mednn.place(x=51 ,y=363)
+                play('entermed')
                 flag = 1
                 
             else:
-                campanel.place(x=440,y=1)
                 #medname=medn.get()
                 #mednn.delete(0, END)
                 #whtpt.config(text=medname)
-                btn_meds.place_forget()
-                whtp.place(x=41 ,y=373)
+                sel.place_forget()
+                whtp.place(x=41 ,y=323)
                 whtpt.place(x=55 ,y=410)
                 #subprocess.call("barcoderead.py", shell=True)
                 with open('barcode_result.txt') as f:
@@ -78,151 +116,73 @@ class PageOne(tk.Frame):
                     line = f.readline()
                     f.close()
                     print("code is " + line)
-                campanel.config(image=camimg2)
-                campanel.place(x=440,y=1)
                 whtpt.config(text=line)
-                btn_meds.place_forget()
-                whtp.place(x=41 ,y=373)
+                sel.place_forget()
+                whtp.place(x=41 ,y=323)
                 whtpt.place(x=55 ,y=410)
-                play("enterdose")
-
-        def btnmeds():
-            medsbtn.place_forget()
-            meds.place(x=67,y=410)
-            whtmeds.place(x=41,y=373)
+                play('enterdose')
 
         def btndose():
             dosebtn.place_forget()
-            dose.place(x=470,y=410)
-            whtdose.place(x=446,y=373)
+            dose.place(x=470,y=353)
+            whtdose.place(x=446,y=323)
 
-        whtmeds=tk.Label(self,image=wht,borderwidth=0)
-        btn_meds= tk.PhotoImage(file="inmed.png")
-        self.btn_meds=btn_meds
-        medsbtn=tk.Button(self,borderwidth=0,image=btn_meds,command=btnmeds)
-        medsbtn.place(x=41 ,y=373)
-
-        whtdose=tk.Label(self,image=wht,borderwidth=0)
-        btn_dose= tk.PhotoImage(file="dday.png")
-        self.btn_dose=btn_dose
         dosebtn=tk.Button(self,borderwidth=0,image=btn_dose,command=btndose)
-        dosebtn.place(x=446 ,y=373)
+        dosebtn.place(x=446 ,y=323)
+        sel=tk.Button(self,borderwidth=0,image=btn_sel,command=btnsel)
+        sel.place(x=41 ,y=323)
 
-        dose_options = [
+        options = [
             "1 dose a day",
             "2 dose a day",
             "3 dose a day",
             "4 dose a day",
             "5 dose a day"
         ]
-
-        meds_options = [
-            "Mefenamic Acid",
-            "Paracetamol",
-            "Amoxicillin",
-            "Antihistamines",
-            "Anti inflammatory"
-        ]
-        clicked_dose.set("Dose")
-        dose = tk.OptionMenu( self , clicked_dose , *dose_options )
-        meds = tk.OptionMenu( self , clicked_meds , *meds_options )
+        clicked.set("Dose")
+        dose = tk.OptionMenu( self , clicked , *options )
         global dosep
-        dosep = clicked_meds.get()
+        dosep = clicked.get()
         #dose.place(x=485,y=373)
-        meds.config(text = "Medication",width=15,font=('Helvetica', 30),bg="white", borderwidth=0,direction="below")
-        dose.config(text = "Dose",width=15,font=('Helvetica', 30),bg="white", borderwidth=0,direction="below")
-        menudose = self.nametowidget(dose.menuname)
-        menumeds = self.nametowidget(meds.menuname)
-        menudose.config(font=('Helvetica', 30))
-        menumeds.config(font=('Helvetica', 30))
+        dose.config(text = "Dose",width=10,font=('Helvetica', 40),bg="white", borderwidth=0,direction="below")
+        menu = self.nametowidget(dose.menuname)
+        menu.config(font=('Helvetica', 40))
+
         def change():
             clkpcd.config(text="Click to Finish",command=pg3)
-            campanel.place_forget()
             controller.show_frame("PageThree")
+
         def pg3():
             controller.show_frame("PageFour")
 
-        clkpcd=tk.Button(self,borderwidth=0,text="Click to Proceed",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=change)
+        clkpcd=tk.Button(self,borderwidth=0,text="Click to Proceed",fg="#A6A6A6",bg="white",font=('Helvetica', 20),command=change)
 
         def dateiton():
             datebtn.place_forget()
             global dosep
-            dosep=clicked_dose.get()
-            whtdose2.place(x=854,y=373)
+            dosep=clicked.get()
+            whtdose2.place(x=854,y=323)
             global labelmore,labelmore2
-            labelmore = tk.Label(self,text="7:00AM / 12:00PM / 7:00PM", font=('Helvetica', 30),bg="white")
-            labelmore2 = tk.Label(self,text="", font=('Helvetica', 30),bg="white")
+            labelmore = tk.Label(self,text="7:00AM / 12:00PM / 7:00PM", font=('Helvetica', 20),bg="white")
+            labelmore2 = tk.Label(self,text="", font=('Helvetica', 20),bg="white")
+            global pilidose
             print (dosep)
             controller.show_frame("PageTwo")
             clkpcd.place(x=500 ,y=600)
             global flag6
             flag6 =1
-  
+
         btn_date= tk.PhotoImage(file="tsched.png")
         self.btn_date=btn_date
         datebtn=tk.Button(self,borderwidth=0,image=btn_date,command=dateiton)
-        datebtn.place(x=854 ,y=373)
+        datebtn.place(x=854 ,y=323)
         whtdose2=tk.Label(self,image=wht,borderwidth=0)
 
-        logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("StartPage"))
-        logout.place(x=1000,y=700)
+        logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#000000",bg="white",font=('Helvetica', 20),command=lambda:controller.show_frame("StartPage"))
+        logout.place(x=1000,y=50)
+    
     def on_show_frame(self, event):
-        global time1,time2,time3,time4,time5
-        time1= hr +":"+mins+pm
-        time2= hr1 +":"+mins1+pm1
-        time3= hr2 +":"+mins2+pm2
-        time4= hr3 +":"+mins3+pm3
-        time5= hr4 +":"+mins4+pm4
-        with open("alarm1.txt", mode ='w') as file1:
-            if int(hr) < 10 and int(mins) < 10 :
-                file1.write("0"+hr +":00 "+pm)
-            elif int(hr) < 10 :
-                file1.write("0"+hr +":"+mins+" "+pm)
-            else:
-                file1.write(hr +":"+mins+" "+pm)
-        with open("alarm2.txt", mode ='w') as file2:
-            if int(hr1) < 10 and int(mins1) < 10 :
-                file2.write("0"+hr1 +":00 "+pm1)
-            elif int(hr1) < 10 :
-                file2.write("0"+hr1 +":"+mins1+" "+pm1)
-            else:
-                file2.write(hr1 +":"+mins1+" "+pm1)
-        with open("alarm3.txt", mode ='w') as file3:
-            if int(hr2) < 10 and int(mins2) < 10 :
-                file3.write("0"+hr2 +":00 "+pm2)
-            elif int(hr2) < 10 :
-                file3.write("0"+hr2 +":"+mins2+" "+pm2)
-            else:
-                file3.write(hr2 +":"+mins2+" "+pm2)
-        with open("alarm4.txt", mode ='w') as file4:
-            if int(hr3) < 10 and int(mins3) < 10 :
-                file4.write("0"+hr3 +":00 "+pm3)
-            elif int(hr1) < 10 :
-                file4.write("0"+hr3 +":"+mins3+" "+pm3)
-            else:
-                file4.write(hr3 +":"+mins3+" "+pm3)
-        with open("alarm5.txt", mode ='w') as file5:
-            if int(hr4) < 10 and int(mins4) < 10 :
-                file5.write("0"+hr4 +":00 "+pm4)
-            elif int(hr4) < 10 :
-                file5.write("0"+hr4 +":"+mins4+" "+pm4)
-            else:
-                file5.write(hr4 +":"+mins4+" "+pm4)
-        if dosep=="1 dose a day":
-            labelmore.config(text="              "+ hr2 +":"+mins2+pm2)
-        elif dosep=="2 dose a day":
-            labelmore.config(text="   "+hr +":"+mins+pm+" / "+hr2 +":"+ mins2 +pm2)
-        elif dosep=="3 dose a day":
-            labelmore.config(text=hr +":"+mins+pm+" / "+hr2 +":"+ mins2 +pm2+" / "+hr4 +":"+ mins4 +pm4)
-        elif dosep=="4 dose a day":
-            labelmore.config(text=hr +":"+mins+pm+" / "+hr1 +":"+ mins1 +pm1+" / "+hr2 +":"+ mins2 +pm2)
-            labelmore2.config(text="              "+ hr3 +":"+mins3+pm3)
-            labelmore2.place(x=880,y=440)
-        elif dosep=="5 dose a day":
-            labelmore.config(text=hr +":"+mins+pm+" / "+hr1 +":"+ mins1 +pm1+" / "+hr2 +":"+ mins2 +pm2)
-            labelmore2.config(text="   "+hr3 +":"+mins3+pm3+" / "+hr4 +":"+ mins4 +pm4)
-            labelmore2.place(x=880,y=440)
-        labelmore.place(x=880,y=400)
+        pass
 
 class PageTwo(tk.Frame):
 
@@ -519,149 +479,3 @@ class PageThree(tk.Frame):
     def on_show_frame(self, event):
         label1.config(text="Place "+   line + " at lit up Medicine Bay")
         play("placemed")
-
-class PageFour(tk.Frame):
-
-    def __init__(self, parent, controller):
-        clicked = tk.StringVar()
-        
-        tk.Frame.__init__(self, parent,bg="#ffffff")
-        self.controller = controller
-        self.bind("<<ShowFrame>>", self.on_show_frame)
-        owimg= tk.PhotoImage(file="ownum2.png")
-        self.owimg=owimg
-        owpanel=tk.Label(self,image=owimg,borderwidth=0)
-        owpanel.place(x=60,y=51)
-        vico= tk.PhotoImage(file="vico.png")
-        self.vico=vico
-        #vicoT=Label(self,image=vico,borderwidth=0)
-        #vicoT.place(x=72,y=157)
-        
-
-        global labe1,labe2,labe3,labe4,labe5,labe6,labe7,labe8,labe9,labe10
-        labe1= tk.Label(self,bg="white",font=('Helvetica', 35))
-        labe1.place(x=100,y=170)
-        labe2= tk.Label(self,bg="white",font=('Helvetica', 35))
-        labe2.place(x=100,y=270)
-        labe3= tk.Label(self,bg="white",font=('Helvetica', 35))
-        labe3.place(x=100,y=370)
-        labe4= tk.Label(self,bg="white",font=('Helvetica', 35))
-        labe4.place(x=100,y=470)
-        labe5= tk.Label(self,bg="white",font=('Helvetica', 35))
-        labe5.place(x=100,y=570)
-        labe6= tk.Label(self,bg="white",font=('Helvetica', 30))
-        labe6.place(x=100,y=250)
-        labe7= tk.Label(self,bg="white",font=('Helvetica', 30))
-        labe7.place(x=100,y=350)
-        labe8= tk.Label(self,bg="white",font=('Helvetica', 30))
-        labe8.place(x=100,y=450)
-        labe9= tk.Label(self,bg="white",font=('Helvetica', 30))
-        labe9.place(x=100,y=550)
-        labe10= tk.Label(self,bg="white",font=('Helvetica', 30))
-        labe10.place(x=100,y=650)
-        global dose1,dose2,dose3,dose4,dose5,AMT
-        dose1= tk.PhotoImage(file="1dose.png")
-        self.dose1=dose1
-        dose2= tk.PhotoImage(file="2dose.png")
-        self.dose2=dose2
-        dose3= tk.PhotoImage(file="3dose.png")
-        self.dose3=dose3
-        dose4= tk.PhotoImage(file="4dose.png")
-        self.dose4=dose4
-        dose5= tk.PhotoImage(file="5dose.png")
-        self.dose5=dose5
-        #AMT=Label(self,borderwidth=0)
-        #AMT.place(x=830,y=160)
-        global lb1,lb2,lb3,lb4,lb5
-        
-        lb1 = tk.Label(self , text = time1, font=('Helvetica', 35), bg= "white", borderwidth=0) 
-        lb1.place(x=830,y=160)
-        lb2=tk.Label(self, text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
-        lb2.place(x=830,y=270)
-        lb3=tk.Label(self, text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
-        lb3.place(x=830,y=370)
-        lb4=tk.Label(self,text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
-        lb4.place(x=830,y=470)
-        lb5=tk.Label(self, text= "", bg="white", font=('Helvetica', 35), borderwidth=0)
-        lb5.place(x=830,y=570)
-
-        logout=tk.Button(self,borderwidth=0,text="LOGOUT",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("StartPage"))
-        logout.place(x=1000,y=72)
-        setup=tk.Button(self,borderwidth=0,text="Click to set up",fg="#A6A6A6",bg="white",font=('Helvetica', 30),command=lambda:controller.show_frame("PageOne"))
-        setup.place(x=850,y=700)
-    def on_show_frame(self, event):
-        print(time1)
-        def month(x):
-            switcher = {
-            '1': "JAN",
-            '2': "FEB",
-            '3': "MAR",
-            '4': "APR",
-            '5': "MAY",
-            '6': "JUN",
-            '7': "JUL",
-            '8': "AUG",
-            '9': "SEP",
-            '10': "OCT",
-            '11': "NOV",
-            '12': "DEC",
-            }
-            return switcher.get(x, "")
-        if int(dosep[0]) ==1: 
-            #AMT.config(image=dose1)
-            labe3.config(text=line)
-            labe8.config(text="till "+ month(day2[0])+" "+ day2[1])
-            lb3.config(text=time3)
-        if int(dosep[0]) ==2: 
-            #AMT.config(image=dose2)
-            labe2.config(text=line)
-            labe7.config(text="till "+ month(day2[0])+" "+ day2[1])
-            labe4.config(text=line)
-            labe9.config(text="till "+ month(day2[0])+" "+ day2[1])
-            lb2.config(text=time1)
-            lb4.config(text=time3)
-        if int(dosep[0]) ==3: 
-            #AMT.config(image=dose3)
-            labe1.config(text=line)
-            labe6.config(text="till "+ month(day2[0])+" "+ day2[1])
-            labe3.config(text=line)
-            labe8.config(text="till "+ month(day2[0])+" "+ day2[1])
-            labe5.config(text=line)
-            labe10.config(text="till "+ month(day2[0])+" "+ day2[1])
-            lb1.config(text=time1)
-            lb2.config(text="")
-            lb3.config(text=time3)
-            lb4.config(text="")
-            lb5.config(text=time5)
-        if int(dosep[0]) ==4: 
-            #AMT.config(image=dose4)
-            labe1.config(text=line)
-            labe6.config(text="till "+ month(day2[0])+" "+ day2[1])
-            labe2.config(text=line)
-            labe7.config(text="till "+ month(day2[0])+" "+ day2[1])
-            labe3.config(text=line)
-            labe8.config(text="till "+ month(day2[0])+" "+day2[1])
-            labe4.config(text=line)
-            labe9.config(text="till "+ month(day2[0])+" "+day2[1])
-            lb1.config(text=time1)
-            lb2.config(text=time2)
-            lb3.config(text=time3)
-            lb4.config(text=time4)
-
-        if int(dosep[0]) ==5: 
-            #AMT.config(image=dose5)
-            labe1.config(text=line)
-            labe6.config(text="till "+ month(day2[0])+" "+day2[1])
-            labe2.config(text=line)
-            labe7.config(text="till "+ month(day2[0])+" "+day2[1])
-            labe3.config(text=line)
-            labe8.config(text="till "+ month(day2[0])+" "+day2[1])
-            labe4.config(text=line)
-            labe9.config(text="till "+ month(day2[0])+" "+day2[1])
-            labe5.config(text=line)
-            labe10.config(text="till "+ month(day2[0])+" "+day2[1])
-            lb1.config(text=time1)
-            lb2.config(text=time2)
-            lb3.config(text=time3)
-            lb4.config(text=time4)
-            lb5.config(text=time5)

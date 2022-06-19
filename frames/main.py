@@ -1,7 +1,7 @@
 import tkinter as tk
 from registration import NamePage, PinPage, PinConfirmPage
 from mainscreen import ActiveScreen, HomePage
-from medication_setup import PageOne, PageTwo, PageThree, PageFour
+from medication_setup import PageOne, PageTwo, PageThree
 from login import StartPage
 from pySerialTransfer import pySerialTransfer as txfer
 from variables import board, BayOne, BayTwo, BayThree, BayFour, BayFive, BaySix, BaySeven, BayEight, BayNine
@@ -20,7 +20,7 @@ class MedkitUI(tk.Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (ActiveScreen, HomePage, StartPage, NamePage, PinPage, PinConfirmPage, PageOne, PageTwo, PageThree, PageFour):
+        for F in (ActiveScreen, HomePage, StartPage, NamePage, PinPage, PinConfirmPage, PageOne, PageTwo, PageThree):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -30,7 +30,7 @@ class MedkitUI(tk.Tk):
             # will be the one that is visible.
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame("HomePage")
+        self.show_frame("PageOne")
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''

@@ -44,6 +44,12 @@ class NamePage(tk.Frame):
 
         button=[]
 
+        def back():
+            controller.show_frame("HomePage")
+
+        back_button = tk.Button(self, text="BACK", font= ('Helvetica', 20), command=back)
+        back_button.place(x=10, y=10)
+
         def create_account():
             global login
             header = ['Medication', 'Dose', 'Start Date', 'End Date', 'First Dose', 'Second Dose', 'Third Dose', 'Fourth Dose', 'Fifth Dose', 'Pin']
@@ -134,7 +140,7 @@ class PinPage(tk.Frame):
             pin = pin_entry.get()
             file = open(f"./accounts/{login}.csv", "a", newline='')
             writer = csv.writer(file)
-            writer.writerow(['','','','','','','','','',pin])
+            writer.writerow(['','','','','','','','','',str(pin)+'x'])
             controller.show_frame("PinConfirmPage")
 
         def select(value):
@@ -216,7 +222,7 @@ class PinConfirmPage(tk.Frame):
                 controller.show_frame("PinPage")
             
             else:
-                controller.show_frame("ActiveScreen")
+                controller.show_frame("StartPage")
 
         def select(value):
             if value == "DELETE":
